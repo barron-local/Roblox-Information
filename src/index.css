@@ -253,12 +253,56 @@ header p {
 .mac-dot.green { background: #27c93f; }
 
 .code-title {
-  margin-left: auto;
-  margin-right: auto;
   font-family: 'Inter', sans-serif;
   font-size: 0.8rem;
-  color: #64748b;
-  transform: translateX(-18px); /* compensate for dots to visually center */
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Copy Code Button */
+.copy-code-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #cbd5e1;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.copy-code-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.copy-code-btn:active {
+  transform: translateY(0);
+}
+
+.copy-code-btn.copied {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.code-header .copy-code-btn {
+  margin-left: auto;
+}
+
+.curl-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
 }
 
 .code-window pre {

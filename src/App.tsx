@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, ShieldCheck, User, Users, UserPlus, Terminal, ArrowLeft } from 'lucide-react';
+import { Search, ShieldCheck, User, Users, UserPlus, Terminal, ArrowLeft, Copy, Check } from 'lucide-react';
 import './index.css';
 
 interface UserData {
@@ -23,6 +23,41 @@ interface Collectible {
   name: string;
   recentAveragePrice: number | null;
   imageUrl?: string;
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+
+  return (
+    <button
+      className={`copy-code-btn ${copied ? 'copied' : ''}`}
+      onClick={handleCopy}
+      title="Copy to clipboard"
+      type="button"
+    >
+      {copied ? (
+        <>
+          <Check size={14} className="copy-icon" />
+          <span>Copied!</span>
+        </>
+      ) : (
+        <>
+          <Copy size={14} className="copy-icon" />
+          <span>Copy</span>
+        </>
+      )}
+    </button>
+  );
 }
 
 function App() {
@@ -278,7 +313,11 @@ function App() {
           
           <h3>1. การยืนยันตัวตน (Authentication)</h3>
           <p>เนื่องจากระบบนี้เป็นแบบ No DB คุณต้องแนบ <strong>API Key</strong> ไปกับ Header ของทุกคำขอเพื่อยืนยันตัวตนเสมอครับ</p>
-          <pre><code>x-api-key: developer_key_123</code></pre>
+          <div className="curl-preview-header">
+            <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}>Header:</div>
+            <CopyButton text={`x-api-key: developer_key_123`} />
+          </div>
+          <pre style={{ margin: '0 0 1.5rem 0', background: '#090d16' }}><code>x-api-key: developer_key_123</code></pre>
           
           <h3>2. เส้นทาง API (Endpoints & ตัวอย่างการเรียก)</h3>
           <p>ระบบของเรามีเส้น API ให้เลือกใช้งานทั้งหมด 4 เส้นทาง พร้อมตัวอย่างคำสั่ง cURL ดังนี้:</p>
@@ -294,7 +333,10 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลโปรไฟล์หลัก (ชื่อ, Avatar, วันสมัคร, สถิติผู้ติดตาม/เพื่อน) — <em>รองรับทั้ง Username และ User ID</em>
               </p>
-              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
+              <div className="curl-preview-header">
+                <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}>ตัวอย่างคำสั่ง (cURL):</div>
+                <CopyButton text={`curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/user/DTO2654`} />
+              </div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/user/DTO2654</code></pre>
             </div>
 
@@ -307,7 +349,10 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลไอเทมในคลังเก็บของ 100 ชิ้นล่าสุด (ใช้ User ID)
               </p>
-              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
+              <div className="curl-preview-header">
+                <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}>ตัวอย่างคำสั่ง (cURL):</div>
+                <CopyButton text={`curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/inventory/4217570031`} />
+              </div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/inventory/4217570031</code></pre>
             </div>
 
@@ -320,7 +365,10 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลไอเทมและอุปกรณ์ที่ตัวละครกำลังสวมใส่อยู่ปัจจุบัน (ใช้ User ID)
               </p>
-              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
+              <div className="curl-preview-header">
+                <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}>ตัวอย่างคำสั่ง (cURL):</div>
+                <CopyButton text={`curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/equipped/4217570031`} />
+              </div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/equipped/4217570031</code></pre>
             </div>
 
@@ -333,7 +381,10 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลไอเทมของสะสมหายาก (Limited Collectibles) ที่ผู้เล่นครอบครอง (ใช้ User ID)
               </p>
-              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
+              <div className="curl-preview-header">
+                <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}>ตัวอย่างคำสั่ง (cURL):</div>
+                <CopyButton text={`curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/limiteds/4217570031`} />
+              </div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/limiteds/4217570031</code></pre>
             </div>
 
@@ -349,6 +400,19 @@ function App() {
               <div className="mac-dot yellow"></div>
               <div className="mac-dot green"></div>
               <span className="code-title">GET /api/user/DTO2654</span>
+              <CopyButton text={JSON.stringify({
+                success: true,
+                data: {
+                  userId: 4217570031,
+                  username: "DTO2654",
+                  displayName: "ArthurWinterfell",
+                  description: "",
+                  isBanned: false,
+                  created: "2023-01-07T13:19:14.423Z",
+                  avatarUrl: "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-86DF6900CD277849C5FDC45E36474E9D-Png/150/150/AvatarHeadshot/Png/noFilter",
+                  stats: { followers: 0, following: 4, friends: 165 }
+                }
+              }, null, 2)} />
             </div>
             <pre><code>
               {`{\n  `}
@@ -376,6 +440,13 @@ function App() {
               <div className="mac-dot yellow"></div>
               <div className="mac-dot green"></div>
               <span className="code-title">GET /api/inventory/4217570031</span>
+              <CopyButton text={JSON.stringify({
+                success: true,
+                data: [
+                  { assetId: 119934643965525, name: "Starwisp", assetType: "ShoulderAccessory", created: "2026-06-13T03:53:37.114Z" },
+                  { assetId: 607702162, name: "Roblox Baseball Cap", assetType: "Hat", created: "2024-08-09T11:53:53.143Z" }
+                ]
+              }, null, 2)} />
             </div>
             <pre><code>
               {`{\n  `}
@@ -400,6 +471,13 @@ function App() {
               <div className="mac-dot yellow"></div>
               <div className="mac-dot green"></div>
               <span className="code-title">GET /api/equipped/4217570031</span>
+              <CopyButton text={JSON.stringify({
+                success: true,
+                data: [
+                  { id: 63690008, name: "Pal Hair", assetType: { id: 41, name: "HairAccessory" } },
+                  { id: 607702162, name: "Roblox Baseball Cap", assetType: { id: 8, name: "Hat" } }
+                ]
+              }, null, 2)} />
             </div>
             <pre><code>
               {`{\n  `}
@@ -422,6 +500,12 @@ function App() {
               <div className="mac-dot yellow"></div>
               <div className="mac-dot green"></div>
               <span className="code-title">GET /api/limiteds/4217570031</span>
+              <CopyButton text={JSON.stringify({
+                success: true,
+                data: [
+                  { userAssetId: 123456789, assetId: 240928503, name: "Valkyrie Helm", recentAveragePrice: 250000, originalPrice: 50000 }
+                ]
+              }, null, 2)} />
             </div>
             <pre><code>
               {`{\n  `}
