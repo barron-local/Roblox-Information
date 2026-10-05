@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, ShieldCheck, User, Users, UserPlus, Terminal, ArrowLeft } from 'lucide-react';
 import './index.css';
 
@@ -40,7 +40,7 @@ function App() {
   const [view, setView] = useState<'search' | 'docs'>('search');
 
   // Simple client-side routing
-  React.useEffect(() => {
+  useEffect(() => {
     const handleLocationChange = () => {
       const path = window.location.pathname;
       if (path === '/docs' || path === '/api' || path === '/api-docs') {
@@ -287,7 +287,7 @@ function App() {
             <div style={{ background: 'rgba(59, 130, 246, 0.1)', borderLeft: '4px solid #3b82f6', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#3b82f6', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/user/:id_or_username</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/user/:id_or_username</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลโปรไฟล์หลัก (ชื่อ, Avatar, สถิติผู้ติดตาม)</span>
               </div>
             </div>
@@ -295,7 +295,7 @@ function App() {
             <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/inventory/:id</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/inventory/:id</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทมในช่องเก็บของ 100 ชิ้นล่าสุด (ใช้ User ID)</span>
               </div>
             </div>
@@ -303,7 +303,7 @@ function App() {
             <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/equipped/:id</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/equipped/:id</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทมที่ตัวละครกำลังสวมใส่อยู่ (ใช้ User ID)</span>
               </div>
             </div>
@@ -311,19 +311,19 @@ function App() {
             <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/limiteds/:id</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/limiteds/:id</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทม Limited ที่ผู้เล่นครอบครอง (ใช้ User ID)</span>
               </div>
             </div>
           </div>
 
-          <p><strong>ตัวแปรที่ต้องใส่ (สำหรับ <code>/proxy/user/</code>):</strong></p>
+          <p><strong>ตัวแปรที่ต้องใส่ (สำหรับ <code>/api/user/</code>):</strong></p>
           <ul>
             <li><code>:id_or_username</code> - สามารถระบุเป็น <strong>ชื่อผู้เล่น</strong> หรือ <strong>รหัส User ID</strong> ก็ได้ ระบบจะทำการแยกแยะให้เองครับ</li>
           </ul>
           
           <p><strong>ตัวอย่างการเรียกใช้งาน (cURL):</strong></p>
-          <pre><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/proxy/user/DTO2654</code></pre>
+          <pre><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/user/DTO2654</code></pre>
           
           <h3>3. ตัวอย่างผลลัพธ์ที่ได้รับ (Response)</h3>
           <p>หากสำเร็จ (Status 200) ระบบจะคืนค่ากลับมาในรูปแบบ JSON ตามนี้ครับ:</p>
