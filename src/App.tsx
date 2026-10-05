@@ -280,76 +280,154 @@ function App() {
           <p>เนื่องจากระบบนี้เป็นแบบ No DB คุณต้องแนบ <strong>API Key</strong> ไปกับ Header ของทุกคำขอเพื่อยืนยันตัวตนเสมอครับ</p>
           <pre><code>x-api-key: developer_key_123</code></pre>
           
-          <h3>2. เส้นทาง API (Endpoints)</h3>
-          <p>ระบบของเรามีเส้น API ให้เลือกใช้งานทั้งหมด 4 เส้นทางดังนี้:</p>
+          <h3>2. เส้นทาง API (Endpoints & ตัวอย่างการเรียก)</h3>
+          <p>ระบบของเรามีเส้น API ให้เลือกใช้งานทั้งหมด 4 เส้นทาง พร้อมตัวอย่างคำสั่ง cURL ดังนี้:</p>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-            <div style={{ background: 'rgba(59, 130, 246, 0.1)', borderLeft: '4px solid #3b82f6', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ background: '#3b82f6', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
-              <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/user/:id_or_username</code>
-                <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลโปรไฟล์หลัก (ชื่อ, Avatar, สถิติผู้ติดตาม)</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            
+            {/* Endpoint 1: User */}
+            <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', borderLeft: '4px solid #3b82f6', padding: '1.25rem', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                <span style={{ background: '#3b82f6', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.85rem' }}>GET</span>
+                <code style={{ fontSize: '1.05rem', background: 'transparent', padding: 0, color: '#e2e8f0', fontWeight: '600' }}>/api/user/:id_or_username</code>
               </div>
+              <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
+                ดึงข้อมูลโปรไฟล์หลัก (ชื่อ, Avatar, วันสมัคร, สถิติผู้ติดตาม/เพื่อน) — <em>รองรับทั้ง Username และ User ID</em>
+              </p>
+              <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/user/DTO2654</code></pre>
             </div>
 
-            <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
-              <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/inventory/:id</code>
-                <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทมในช่องเก็บของ 100 ชิ้นล่าสุด (ใช้ User ID)</span>
+            {/* Endpoint 2: Inventory */}
+            <div style={{ background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.2)', borderLeft: '4px solid #a855f7', padding: '1.25rem', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.85rem' }}>GET</span>
+                <code style={{ fontSize: '1.05rem', background: 'transparent', padding: 0, color: '#e2e8f0', fontWeight: '600' }}>/api/inventory/:id</code>
               </div>
+              <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
+                ดึงข้อมูลไอเทมในคลังเก็บของ 100 ชิ้นล่าสุด (ใช้ User ID)
+              </p>
+              <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/inventory/4217570031</code></pre>
             </div>
 
-            <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
-              <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/equipped/:id</code>
-                <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทมที่ตัวละครกำลังสวมใส่อยู่ (ใช้ User ID)</span>
+            {/* Endpoint 3: Equipped */}
+            <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', borderLeft: '4px solid #10b981', padding: '1.25rem', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                <span style={{ background: '#10b981', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.85rem' }}>GET</span>
+                <code style={{ fontSize: '1.05rem', background: 'transparent', padding: 0, color: '#e2e8f0', fontWeight: '600' }}>/api/equipped/:id</code>
               </div>
+              <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
+                ดึงข้อมูลไอเทมและอุปกรณ์ที่ตัวละครกำลังสวมใส่อยู่ปัจจุบัน (ใช้ User ID)
+              </p>
+              <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/equipped/4217570031</code></pre>
             </div>
 
-            <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
-              <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/limiteds/:id</code>
-                <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทม Limited ที่ผู้เล่นครอบครอง (ใช้ User ID)</span>
+            {/* Endpoint 4: Limiteds */}
+            <div style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)', borderLeft: '4px solid #f59e0b', padding: '1.25rem', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                <span style={{ background: '#f59e0b', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.85rem' }}>GET</span>
+                <code style={{ fontSize: '1.05rem', background: 'transparent', padding: 0, color: '#e2e8f0', fontWeight: '600' }}>/api/limiteds/:id</code>
               </div>
+              <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
+                ดึงข้อมูลไอเทมของสะสมหายาก (Limited Collectibles) ที่ผู้เล่นครอบครอง (ใช้ User ID)
+              </p>
+              <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/limiteds/4217570031</code></pre>
             </div>
+
           </div>
 
-          <p><strong>ตัวแปรที่ต้องใส่ (สำหรับ <code>/api/user/</code>):</strong></p>
-          <ul>
-            <li><code>:id_or_username</code> - สามารถระบุเป็น <strong>ชื่อผู้เล่น</strong> หรือ <strong>รหัส User ID</strong> ก็ได้ ระบบจะทำการแยกแยะให้เองครับ</li>
-          </ul>
+          <h3>3. ตัวอย่างผลลัพธ์ที่ได้รับ (Response Examples)</h3>
           
-          <p><strong>ตัวอย่างการเรียกใช้งาน (cURL):</strong></p>
-          <pre><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/user/DTO2654</code></pre>
-          
-          <h3>3. ตัวอย่างผลลัพธ์ที่ได้รับ (Response)</h3>
-          <p>หากสำเร็จ (Status 200) ระบบจะคืนค่ากลับมาในรูปแบบ JSON ตามนี้ครับ:</p>
-          
+          {/* Response Example 1: User */}
+          <p><strong>3.1 ข้อมูลผู้เล่น (User Profile Response)</strong></p>
           <div className="code-window">
             <div className="code-header">
               <div className="mac-dot red"></div>
               <div className="mac-dot yellow"></div>
               <div className="mac-dot green"></div>
-              <span className="code-title">response.json</span>
+              <span className="code-title">GET /api/user/DTO2654</span>
             </div>
             <pre><code>
               {`{\n  `}
               <span className="json-key">"success"</span>{`: `}<span className="json-boolean">true</span>{`,\n  `}
               <span className="json-key">"data"</span>{`: {\n    `}
               <span className="json-key">"userId"</span>{`: `}<span className="json-number">4217570031</span>{`,\n    `}
-              <span className="json-key">"username"</span>{`: `}<span className="json-string">"ArthurWinterfell"</span>{`,\n    `}
-              <span className="json-key">"displayName"</span>{`: `}<span className="json-string">"DTO2654"</span>{`,\n    `}
-              <span className="json-key">"description"</span>{`: `}<span className="json-string">"..."</span>{`,\n    `}
+              <span className="json-key">"username"</span>{`: `}<span className="json-string">"DTO2654"</span>{`,\n    `}
+              <span className="json-key">"displayName"</span>{`: `}<span className="json-string">"ArthurWinterfell"</span>{`,\n    `}
+              <span className="json-key">"description"</span>{`: `}<span className="json-string">""</span>{`,\n    `}
               <span className="json-key">"isBanned"</span>{`: `}<span className="json-boolean">false</span>{`,\n    `}
-              <span className="json-key">"created"</span>{`: `}<span className="json-string">"2023-01-07T12:00:00.000Z"</span>{`,\n    `}
-              <span className="json-key">"avatarUrl"</span>{`: `}<span className="json-string">"https://tr.rbxcdn.com/..."</span>{`,\n    `}
+              <span className="json-key">"created"</span>{`: `}<span className="json-string">"2023-01-07T13:19:14.423Z"</span>{`,\n    `}
+              <span className="json-key">"avatarUrl"</span>{`: `}<span className="json-string">"https://tr.rbxcdn.com/30DAY-AvatarHeadshot-...-Png/150/150/AvatarHeadshot/Png/noFilter"</span>{`,\n    `}
               <span className="json-key">"stats"</span>{`: {\n      `}
               <span className="json-key">"followers"</span>{`: `}<span className="json-number">0</span>{`,\n      `}
               <span className="json-key">"following"</span>{`: `}<span className="json-number">4</span>{`,\n      `}
               <span className="json-key">"friends"</span>{`: `}<span className="json-number">165</span>{`\n    }\n  }\n}`}
+            </code></pre>
+          </div>
+
+          {/* Response Example 2: Inventory */}
+          <p><strong>3.2 คลังเก็บของ (Inventory Response)</strong></p>
+          <div className="code-window">
+            <div className="code-header">
+              <div className="mac-dot red"></div>
+              <div className="mac-dot yellow"></div>
+              <div className="mac-dot green"></div>
+              <span className="code-title">GET /api/inventory/4217570031</span>
+            </div>
+            <pre><code>
+              {`{\n  `}
+              <span className="json-key">"success"</span>{`: `}<span className="json-boolean">true</span>{`,\n  `}
+              <span className="json-key">"data"</span>{`: [\n    {\n      `}
+              <span className="json-key">"assetId"</span>{`: `}<span className="json-number">119934643965525</span>{`,\n      `}
+              <span className="json-key">"name"</span>{`: `}<span className="json-string">"Starwisp"</span>{`,\n      `}
+              <span className="json-key">"assetType"</span>{`: `}<span className="json-string">"ShoulderAccessory"</span>{`,\n      `}
+              <span className="json-key">"created"</span>{`: `}<span className="json-string">"2026-06-13T03:53:37.114Z"</span>{`\n    },\n    {\n      `}
+              <span className="json-key">"assetId"</span>{`: `}<span className="json-number">607702162</span>{`,\n      `}
+              <span className="json-key">"name"</span>{`: `}<span className="json-string">"Roblox Baseball Cap"</span>{`,\n      `}
+              <span className="json-key">"assetType"</span>{`: `}<span className="json-string">"Hat"</span>{`,\n      `}
+              <span className="json-key">"created"</span>{`: `}<span className="json-string">"2024-08-09T11:53:53.143Z"</span>{`\n    }\n  ]\n}`}
+            </code></pre>
+          </div>
+
+          {/* Response Example 3: Equipped */}
+          <p><strong>3.3 ไอเทมที่สวมใส่อยู่ (Equipped Items Response)</strong></p>
+          <div className="code-window">
+            <div className="code-header">
+              <div className="mac-dot red"></div>
+              <div className="mac-dot yellow"></div>
+              <div className="mac-dot green"></div>
+              <span className="code-title">GET /api/equipped/4217570031</span>
+            </div>
+            <pre><code>
+              {`{\n  `}
+              <span className="json-key">"success"</span>{`: `}<span className="json-boolean">true</span>{`,\n  `}
+              <span className="json-key">"data"</span>{`: [\n    {\n      `}
+              <span className="json-key">"id"</span>{`: `}<span className="json-number">63690008</span>{`,\n      `}
+              <span className="json-key">"name"</span>{`: `}<span className="json-string">"Pal Hair"</span>{`,\n      `}
+              <span className="json-key">"assetType"</span>{`: { `}<span className="json-key">"id"</span>{`: `}<span className="json-number">41</span>{`, `}<span className="json-key">"name"</span>{`: `}<span className="json-string">"HairAccessory"</span>{` }\n    },\n    {\n      `}
+              <span className="json-key">"id"</span>{`: `}<span className="json-number">607702162</span>{`,\n      `}
+              <span className="json-key">"name"</span>{`: `}<span className="json-string">"Roblox Baseball Cap"</span>{`,\n      `}
+              <span className="json-key">"assetType"</span>{`: { `}<span className="json-key">"id"</span>{`: `}<span className="json-number">8</span>{`, `}<span className="json-key">"name"</span>{`: `}<span className="json-string">"Hat"</span>{` }\n    }\n  ]\n}`}
+            </code></pre>
+          </div>
+
+          {/* Response Example 4: Limiteds */}
+          <p><strong>3.4 ของสะสม Limited (Limiteds Collectibles Response)</strong></p>
+          <div className="code-window">
+            <div className="code-header">
+              <div className="mac-dot red"></div>
+              <div className="mac-dot yellow"></div>
+              <div className="mac-dot green"></div>
+              <span className="code-title">GET /api/limiteds/4217570031</span>
+            </div>
+            <pre><code>
+              {`{\n  `}
+              <span className="json-key">"success"</span>{`: `}<span className="json-boolean">true</span>{`,\n  `}
+              <span className="json-key">"data"</span>{`: [\n    {\n      `}
+              <span className="json-key">"userAssetId"</span>{`: `}<span className="json-number">123456789</span>{`,\n      `}
+              <span className="json-key">"assetId"</span>{`: `}<span className="json-number">240928503</span>{`,\n      `}
+              <span className="json-key">"name"</span>{`: `}<span className="json-string">"Valkyrie Helm"</span>{`,\n      `}
+              <span className="json-key">"recentAveragePrice"</span>{`: `}<span className="json-number">250000</span>{`,\n      `}
+              <span className="json-key">"originalPrice"</span>{`: `}<span className="json-number">50000</span>{`\n    }\n  ]\n}`}
             </code></pre>
           </div>
         </div>
