@@ -294,6 +294,7 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลโปรไฟล์หลัก (ชื่อ, Avatar, วันสมัคร, สถิติผู้ติดตาม/เพื่อน) — <em>รองรับทั้ง Username และ User ID</em>
               </p>
+              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/user/DTO2654</code></pre>
             </div>
 
@@ -306,6 +307,7 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลไอเทมในคลังเก็บของ 100 ชิ้นล่าสุด (ใช้ User ID)
               </p>
+              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/inventory/4217570031</code></pre>
             </div>
 
@@ -318,6 +320,7 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลไอเทมและอุปกรณ์ที่ตัวละครกำลังสวมใส่อยู่ปัจจุบัน (ใช้ User ID)
               </p>
+              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/equipped/4217570031</code></pre>
             </div>
 
@@ -330,6 +333,7 @@ function App() {
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 0.75rem 0' }}>
                 ดึงข้อมูลไอเทมของสะสมหายาก (Limited Collectibles) ที่ผู้เล่นครอบครอง (ใช้ User ID)
               </p>
+              <div style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>ตัวอย่างคำสั่ง (cURL):</div>
               <pre style={{ margin: 0, background: '#090d16' }}><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/api/limiteds/4217570031</code></pre>
             </div>
 
