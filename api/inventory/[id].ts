@@ -4,13 +4,23 @@ export const config = {
 
 const API_KEY = "developer_key_123";
 
+const DEFAULT_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "Accept": "application/json",
+};
+
 const fetchRoblox = async (url: string) => {
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: DEFAULT_HEADERS });
   if (!res.ok) {
     if (res.status === 404 || res.status === 400) return null;
     throw new Error(`Roblox API Error: ${res.status}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return null;
+  }
 };
 
 export default async function handler(req: Request) {

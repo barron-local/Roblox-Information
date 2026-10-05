@@ -4,14 +4,25 @@ export const config = {
 
 const API_KEY = "developer_key_123"; // No DB, static key
 
+const DEFAULT_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "Accept": "application/json",
+};
+
 // Helper to fetch data
 const fetchRoblox = async (url: string) => {
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: DEFAULT_HEADERS });
   if (!res.ok) {
     if (res.status === 404 || res.status === 400) return null;
     throw new Error(`Roblox API Error: ${res.status}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error(`Invalid JSON from ${url}:`, text.slice(0, 100));
+    return null;
+  }
 };
 
 export default async function handler(req: Request) {
@@ -49,17 +60,28 @@ export default async function handler(req: Request) {
     let isId = /^\d+$/.test(searchParam);
 
     if (isId) {
-      const testRes = await fetch(`https://users.roblox.com/v1/users/${searchParam}`);
+      const testRes = await fetch(`https://users.roblox.com/v1/users/${searchParam}`, { headers: DEFAULT_HEADERS });
       if (testRes.ok) userId = parseInt(searchParam, 10);
     }
 
     if (!userId) {
       const searchRes = await fetch("https://users.roblox.com/v1/usernames/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...DEFAULT_HEADERS },
         body: JSON.stringify({ usernames: [searchParam], excludeBannedUsers: false })
       });
-      const searchData = await searchRes.json();
+      
+      const searchTxt = await searchRes.text();
+      let searchData: any = null;
+      try {
+        searchData = JSON.parse(searchTxt);
+      } catch (e) {
+        return new Response(JSON.stringify({ error: "Roblox API returned HTML/blocked", raw: searchTxt.slice(0, 200) }), {
+          status: 502,
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        });
+      }
+
       if (!searchData.data || searchData.data.length === 0) {
         return new Response(JSON.stringify({ error: "User not found" }), { status: 404, headers: corsHeaders });
       }
@@ -74,6 +96,13 @@ export default async function handler(req: Request) {
       fetchRoblox(`https://friends.roblox.com/v1/users/${userId}/followings/count`),
       fetchRoblox(`https://friends.roblox.com/v1/users/${userId}/friends/count`),
     ]);
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unable to retrieve user details from Roblox" }), {
+        status: 502,
+        headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
 
     const profileData = {
       userId,
