@@ -66,25 +66,50 @@ export default async function handler(req: Request) {
     }
 
     if (!userId) {
-      const searchRes = await fetch(`${origin}/proxy/users/v1/users/search?keyword=${encodeURIComponent(searchParam)}&limit=1`, {
-        headers: DEFAULT_HEADERS
-      });
-      
-      const searchTxt = await searchRes.text();
-      let searchData: any = null;
+      // 1. Try exact username lookup via proxy
       try {
-        searchData = JSON.parse(searchTxt);
-      } catch (e) {
-        return new Response(JSON.stringify({ error: "Roblox API error", raw: searchTxt.slice(0, 200) }), {
-          status: 502,
-          headers: { "Content-Type": "application/json", ...corsHeaders }
+        const usernameRes = await fetch(`${origin}/proxy/users/v1/usernames/users`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...DEFAULT_HEADERS },
+          body: JSON.stringify({ usernames: [searchParam], excludeBannedUsers: false })
         });
+        if (usernameRes.ok) {
+          const uData = await usernameRes.json();
+          if (uData.data && uData.data.length > 0) {
+            userId = uData.data[0].id;
+          }
+        }
+      } catch (e) {
+        // ignore and fallback
       }
 
-      if (!searchData.data || searchData.data.length === 0) {
+      // 2. Fallback to keyword search
+      if (!userId) {
+        const searchRes = await fetch(`${origin}/proxy/users/v1/users/search?keyword=${encodeURIComponent(searchParam)}&limit=10`, {
+          headers: DEFAULT_HEADERS
+        });
+        
+        const searchTxt = await searchRes.text();
+        let searchData: any = null;
+        try {
+          searchData = JSON.parse(searchTxt);
+        } catch (e) {
+          return new Response(JSON.stringify({ error: "Roblox API error", raw: searchTxt.slice(0, 200) }), {
+            status: 502,
+            headers: { "Content-Type": "application/json", ...corsHeaders }
+          });
+        }
+
+        if (searchData.data && searchData.data.length > 0) {
+          // Find exact match or take first
+          const exact = searchData.data.find((u: any) => u.name.toLowerCase() === searchParam.toLowerCase() || u.displayName.toLowerCase() === searchParam.toLowerCase());
+          userId = exact ? exact.id : searchData.data[0].id;
+        }
+      }
+
+      if (!userId) {
         return new Response(JSON.stringify({ error: "User not found" }), { status: 404, headers: corsHeaders });
       }
-      userId = searchData.data[0].id;
     }
 
     // Fetch parallel data via vercel proxy
