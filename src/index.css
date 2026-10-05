@@ -38,6 +38,31 @@ body {
   overflow-y: scroll; /* Force vertical scrollbar to prevent layout shift */
 }
 
+/* Global Custom Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) #090d16;
+}
+
 #root {
   width: 100%;
   min-height: 100vh;
@@ -158,15 +183,36 @@ header p {
 }
 
 .docs-card pre {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid var(--border-subtle);
+  background: #090d16;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   overflow-x: auto;
   margin-bottom: 1.5rem;
   color: #e2e8f0;
-  font-family: 'Inter', monospace;
-  box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+  font-family: 'Consolas', 'Fira Code', 'Inter', monospace;
+  font-size: 0.95rem;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) #090d16;
+}
+
+.docs-card pre::-webkit-scrollbar {
+  height: 6px;
+}
+
+.docs-card pre::-webkit-scrollbar-track {
+  background: #090d16;
+  border-radius: 0 0 8px 8px;
+}
+
+.docs-card pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.docs-card pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .docs-card code {
