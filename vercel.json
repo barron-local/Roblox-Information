@@ -1,11 +1,11 @@
 {
   "rewrites": [
-    { "source": "/api/users/:match*", "destination": "https://users.roblox.com/:match*" },
-    { "source": "/api/friends/:match*", "destination": "https://friends.roblox.com/:match*" },
-    { "source": "/api/thumbnails/:match*", "destination": "https://thumbnails.roblox.com/:match*" },
-    { "source": "/api/inventory/:match*", "destination": "https://inventory.roblox.com/:match*" },
-    { "source": "/api/avatar/:match*", "destination": "https://avatar.roblox.com/:match*" },
-    { "source": "/api/economy/:match*", "destination": "https://economy.roblox.com/:match*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/proxy/users/:match*", "destination": "https://users.roblox.com/:match*" },
+    { "source": "/proxy/friends/:match*", "destination": "https://friends.roblox.com/:match*" },
+    { "source": "/proxy/thumbnails/:match*", "destination": "https://thumbnails.roblox.com/:match*" },
+    { "source": "/proxy/inventory/:match*", "destination": "https://inventory.roblox.com/:match*" },
+    { "source": "/proxy/avatar/:match*", "destination": "https://avatar.roblox.com/:match*" },
+    { "source": "/proxy/economy/:match*", "destination": "https://economy.roblox.com/:match*" },
+    { "source": "/((?!api/|proxy/).*)", "destination": "/index.html" }
   ]
 }
