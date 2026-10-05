@@ -323,7 +323,7 @@ function App() {
           </ul>
           
           <p><strong>ตัวอย่างการเรียกใช้งาน (cURL):</strong></p>
-          <pre><code>curl -H "x-api-key: developer_key_123" https://your-domain.vercel.app/proxy/user/DTO2654</code></pre>
+          <pre><code>curl -H "x-api-key: developer_key_123" https://roblox-information.vercel.app/proxy/user/DTO2654</code></pre>
           
           <h3>3. ตัวอย่างผลลัพธ์ที่ได้รับ (Response)</h3>
           <p>หากสำเร็จ (Status 200) ระบบจะคืนค่ากลับมาในรูปแบบ JSON ตามนี้ครับ:</p>
