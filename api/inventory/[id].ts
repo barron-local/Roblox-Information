@@ -45,7 +45,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const data = await fetchRoblox(`https://inventory.roblox.com/v2/users/${userIdStr}/inventory?assetTypes=Hat,HairAccessory,FaceAccessory,NeckAccessory,ShoulderAccessory,FrontAccessory,BackAccessory,WaistAccessory&limit=100&sortOrder=Desc`);
+    const data = await fetchRoblox(`${url.origin}/proxy/inventory/v2/users/${userIdStr}/inventory?assetTypes=Hat,HairAccessory,FaceAccessory,NeckAccessory,ShoulderAccessory,FrontAccessory,BackAccessory,WaistAccessory&limit=100&sortOrder=Desc`);
     
     if (!data || !data.data) {
       return new Response(JSON.stringify({ success: true, data: [] }), { headers: corsHeaders });

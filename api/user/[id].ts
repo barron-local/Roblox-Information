@@ -27,6 +27,7 @@ const fetchRoblox = async (url: string) => {
 
 export default async function handler(req: Request) {
   const url = new URL(req.url);
+  const origin = url.origin;
   
   // CORS headers
   const corsHeaders = {
@@ -60,15 +61,13 @@ export default async function handler(req: Request) {
     let isId = /^\d+$/.test(searchParam);
 
     if (isId) {
-      const testRes = await fetch(`https://users.roblox.com/v1/users/${searchParam}`, { headers: DEFAULT_HEADERS });
+      const testRes = await fetch(`${origin}/proxy/users/v1/users/${searchParam}`, { headers: DEFAULT_HEADERS });
       if (testRes.ok) userId = parseInt(searchParam, 10);
     }
 
     if (!userId) {
-      const searchRes = await fetch("https://users.roblox.com/v1/usernames/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...DEFAULT_HEADERS },
-        body: JSON.stringify({ usernames: [searchParam], excludeBannedUsers: false })
+      const searchRes = await fetch(`${origin}/proxy/users/v1/users/search?keyword=${encodeURIComponent(searchParam)}&limit=1`, {
+        headers: DEFAULT_HEADERS
       });
       
       const searchTxt = await searchRes.text();
@@ -76,7 +75,7 @@ export default async function handler(req: Request) {
       try {
         searchData = JSON.parse(searchTxt);
       } catch (e) {
-        return new Response(JSON.stringify({ error: "Roblox API returned HTML/blocked", raw: searchTxt.slice(0, 200) }), {
+        return new Response(JSON.stringify({ error: "Roblox API error", raw: searchTxt.slice(0, 200) }), {
           status: 502,
           headers: { "Content-Type": "application/json", ...corsHeaders }
         });
@@ -88,13 +87,13 @@ export default async function handler(req: Request) {
       userId = searchData.data[0].id;
     }
 
-    // Fetch parallel data
+    // Fetch parallel data via vercel proxy
     const [user, avatar, followers, followings, friends] = await Promise.all([
-      fetchRoblox(`https://users.roblox.com/v1/users/${userId}`),
-      fetchRoblox(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`),
-      fetchRoblox(`https://friends.roblox.com/v1/users/${userId}/followers/count`),
-      fetchRoblox(`https://friends.roblox.com/v1/users/${userId}/followings/count`),
-      fetchRoblox(`https://friends.roblox.com/v1/users/${userId}/friends/count`),
+      fetchRoblox(`${origin}/proxy/users/v1/users/${userId}`),
+      fetchRoblox(`${origin}/proxy/thumbnails/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`),
+      fetchRoblox(`${origin}/proxy/friends/v1/users/${userId}/followers/count`),
+      fetchRoblox(`${origin}/proxy/friends/v1/users/${userId}/followings/count`),
+      fetchRoblox(`${origin}/proxy/friends/v1/users/${userId}/friends/count`),
     ]);
 
     if (!user) {

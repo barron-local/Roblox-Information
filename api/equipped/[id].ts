@@ -45,7 +45,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const data = await fetchRoblox(`https://avatar.roblox.com/v1/users/${userIdStr}/avatar`);
+    const data = await fetchRoblox(`${url.origin}/proxy/avatar/v1/users/${userIdStr}/avatar`);
     
     if (!data || !data.assets) {
       return new Response(JSON.stringify({ success: true, data: [] }), { headers: corsHeaders });

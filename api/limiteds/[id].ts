@@ -45,7 +45,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const data = await fetchRoblox(`https://inventory.roblox.com/v1/users/${userIdStr}/assets/collectibles?limit=100`);
+    const data = await fetchRoblox(`${url.origin}/proxy/inventory/v1/users/${userIdStr}/assets/collectibles?limit=100`);
     
     if (!data || !data.data) {
       return new Response(JSON.stringify({ success: true, data: [] }), { headers: corsHeaders });
