@@ -39,6 +39,27 @@ function App() {
   const [activeTab, setActiveTab] = useState<'about' | 'avatar' | 'inventory' | 'limiteds'>('about');
   const [view, setView] = useState<'search' | 'docs'>('search');
 
+  // Simple client-side routing
+  React.useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname;
+      if (path === '/docs' || path === '/api' || path === '/api-docs') {
+        setView('docs');
+      } else {
+        setView('search');
+      }
+    };
+
+    handleLocationChange(); // Check initial route
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  const navigateTo = (newView: 'search' | 'docs') => {
+    setView(newView);
+    window.history.pushState({}, '', newView === 'docs' ? '/docs' : '/');
+  };
+
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US', {
       notation: 'compact',
@@ -79,7 +100,7 @@ function App() {
       // If the input is purely numbers, it could be a User ID
       if (/^\d+$/.test(input)) {
         try {
-          const testIdRes = await fetch(`/api/users/v1/users/${input}`);
+          const testIdRes = await fetch(`/proxy/users/v1/users/${input}`);
           if (testIdRes.ok) {
             userId = parseInt(input, 10);
           }
@@ -90,7 +111,7 @@ function App() {
 
       // Fallback to username search if not found as ID
       if (!userId) {
-        const searchRes = await fetch('/api/users/v1/usernames/users', {
+        const searchRes = await fetch('/proxy/users/v1/usernames/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ usernames: [input], excludeBannedUsers: false })
@@ -107,11 +128,11 @@ function App() {
       }
 
       const [userRes, avatarRes, followersRes, followingsRes, friendsRes] = await Promise.all([
-        fetch(`/api/users/v1/users/${userId}`),
-        fetch(`/api/thumbnails/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`),
-        fetch(`/api/friends/v1/users/${userId}/followers/count`),
-        fetch(`/api/friends/v1/users/${userId}/followings/count`),
-        fetch(`/api/friends/v1/users/${userId}/friends/count`)
+        fetch(`/proxy/users/v1/users/${userId}`),
+        fetch(`/proxy/thumbnails/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`),
+        fetch(`/proxy/friends/v1/users/${userId}/followers/count`),
+        fetch(`/proxy/friends/v1/users/${userId}/followings/count`),
+        fetch(`/proxy/friends/v1/users/${userId}/friends/count`)
       ]);
 
       if (!userRes.ok) throw new Error('Failed to fetch user details');
@@ -134,7 +155,7 @@ function App() {
       }
 
       // Fetch Collectibles (Limiteds)
-      const invRes = await fetch(`/api/inventory/v1/users/${userId}/assets/collectibles?limit=10`);
+      const invRes = await fetch(`/proxy/inventory/v1/users/${userId}/assets/collectibles?limit=10`);
       let colData: Collectible[] = [];
       if (invRes.ok) {
         const invJson = await invRes.json();
@@ -142,7 +163,7 @@ function App() {
           colData = invJson.data.slice(0, 8); // Display top 8
           const assetIds = colData.map(c => c.assetId).join(',');
           
-          const thumbRes = await fetch(`/api/thumbnails/v1/assets?assetIds=${assetIds}&size=150x150&format=Png&isCircular=false`);
+          const thumbRes = await fetch(`/proxy/thumbnails/v1/assets?assetIds=${assetIds}&size=150x150&format=Png&isCircular=false`);
           if (thumbRes.ok) {
             const thumbJson = await thumbRes.json();
             colData = colData.map(c => {
@@ -155,7 +176,7 @@ function App() {
       setCollectibles(colData.length > 0 ? colData : null);
 
       // Fetch Equipped Items
-      const wearRes = await fetch(`/api/avatar/v1/users/${userId}/currently-wearing`);
+      const wearRes = await fetch(`/proxy/avatar/v1/users/${userId}/currently-wearing`);
       if (wearRes.ok) {
         const wearJson = await wearRes.json();
         if (wearJson.assetIds && wearJson.assetIds.length > 0) {
@@ -163,7 +184,7 @@ function App() {
           const assetIdsString = topAssets.join(',');
           
           // Get Thumbnails
-          const eqThumbRes = await fetch(`/api/thumbnails/v1/assets?assetIds=${assetIdsString}&size=150x150&format=Png&isCircular=false`);
+          const eqThumbRes = await fetch(`/proxy/thumbnails/v1/assets?assetIds=${assetIdsString}&size=150x150&format=Png&isCircular=false`);
           let thumbMap: Record<number, string> = {};
           if (eqThumbRes.ok) {
             const eqThumbJson = await eqThumbRes.json();
@@ -176,7 +197,7 @@ function App() {
           const eqData: Collectible[] = await Promise.all(topAssets.map(async (id: number) => {
             let name = "Unknown Item";
             try {
-              const detRes = await fetch(`/api/economy/v2/assets/${id}/details`);
+              const detRes = await fetch(`/proxy/economy/v2/assets/${id}/details`);
               if (detRes.ok) {
                 const detJson = await detRes.json();
                 name = detJson.Name || name;
@@ -197,7 +218,7 @@ function App() {
       }
 
       // Fetch Full Inventory (Accessories)
-      const fullInvRes = await fetch(`/api/inventory/v2/users/${userId}/inventory?assetTypes=Hat,HairAccessory,FaceAccessory,NeckAccessory,ShoulderAccessory,FrontAccessory,BackAccessory,WaistAccessory&limit=100&sortOrder=Desc`);
+      const fullInvRes = await fetch(`/proxy/inventory/v2/users/${userId}/inventory?assetTypes=Hat,HairAccessory,FaceAccessory,NeckAccessory,ShoulderAccessory,FrontAccessory,BackAccessory,WaistAccessory&limit=100&sortOrder=Desc`);
       if (fullInvRes.ok) {
         const fullInvJson = await fullInvRes.json();
         if (fullInvJson.data && fullInvJson.data.length > 0) {
@@ -205,7 +226,7 @@ function App() {
           const assetIdsString = invAssets.map((i: any) => i.assetId).join(',');
           
           // Get Thumbnails
-          const invThumbRes = await fetch(`/api/thumbnails/v1/assets?assetIds=${assetIdsString}&size=150x150&format=Png&isCircular=false`);
+          const invThumbRes = await fetch(`/proxy/thumbnails/v1/assets?assetIds=${assetIdsString}&size=150x150&format=Png&isCircular=false`);
           let thumbMap: Record<number, string> = {};
           if (invThumbRes.ok) {
             const invThumbJson = await invThumbRes.json();
@@ -235,7 +256,7 @@ function App() {
   return (
     <div className="app-container">
       <button 
-        onClick={() => setView(view === 'docs' ? 'search' : 'docs')} 
+        onClick={() => navigateTo(view === 'docs' ? 'search' : 'docs')} 
         className="api-docs-toggle"
       >
         {view === 'docs' ? (
@@ -266,7 +287,7 @@ function App() {
             <div style={{ background: 'rgba(59, 130, 246, 0.1)', borderLeft: '4px solid #3b82f6', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#3b82f6', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/user/:id_or_username</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/user/:id_or_username</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลโปรไฟล์หลัก (ชื่อ, Avatar, สถิติผู้ติดตาม)</span>
               </div>
             </div>
@@ -274,7 +295,7 @@ function App() {
             <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/inventory/:id</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/inventory/:id</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทมในช่องเก็บของ 100 ชิ้นล่าสุด (ใช้ User ID)</span>
               </div>
             </div>
@@ -282,7 +303,7 @@ function App() {
             <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/equipped/:id</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/equipped/:id</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทมที่ตัวละครกำลังสวมใส่อยู่ (ใช้ User ID)</span>
               </div>
             </div>
@@ -290,19 +311,19 @@ function App() {
             <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '4px solid #a855f7', padding: '1rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ background: '#a855f7', color: '#fff', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>GET</span>
               <div>
-                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/api/limiteds/:id</code>
+                <code style={{ fontSize: '1.1rem', background: 'transparent', padding: 0, color: '#e2e8f0', display: 'block' }}>/proxy/limiteds/:id</code>
                 <span style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '0.25rem', display: 'block' }}>ดึงข้อมูลไอเทม Limited ที่ผู้เล่นครอบครอง (ใช้ User ID)</span>
               </div>
             </div>
           </div>
 
-          <p><strong>ตัวแปรที่ต้องใส่ (สำหรับ <code>/api/user/</code>):</strong></p>
+          <p><strong>ตัวแปรที่ต้องใส่ (สำหรับ <code>/proxy/user/</code>):</strong></p>
           <ul>
             <li><code>:id_or_username</code> - สามารถระบุเป็น <strong>ชื่อผู้เล่น</strong> หรือ <strong>รหัส User ID</strong> ก็ได้ ระบบจะทำการแยกแยะให้เองครับ</li>
           </ul>
           
           <p><strong>ตัวอย่างการเรียกใช้งาน (cURL):</strong></p>
-          <pre><code>curl -H "x-api-key: developer_key_123" https://your-domain.vercel.app/api/user/DTO2654</code></pre>
+          <pre><code>curl -H "x-api-key: developer_key_123" https://your-domain.vercel.app/proxy/user/DTO2654</code></pre>
           
           <h3>3. ตัวอย่างผลลัพธ์ที่ได้รับ (Response)</h3>
           <p>หากสำเร็จ (Status 200) ระบบจะคืนค่ากลับมาในรูปแบบ JSON ตามนี้ครับ:</p>

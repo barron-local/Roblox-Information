@@ -10,35 +10,35 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api/users': {
+      '/proxy/users': {
         target: 'https://users.roblox.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/users/, '')
+        rewrite: (path) => path.replace(/^\/proxy\/users/, '')
       },
-      '/api/thumbnails': {
+      '/proxy/thumbnails': {
         target: 'https://thumbnails.roblox.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/thumbnails/, '')
+        rewrite: (path) => path.replace(/^\/proxy\/thumbnails/, '')
       },
-      '/api/friends': {
+      '/proxy/friends': {
         target: 'https://friends.roblox.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/friends/, '')
+        rewrite: (path) => path.replace(/^\/proxy\/friends/, '')
       },
-      '/api/inventory': {
+      '/proxy/inventory': {
         target: 'https://inventory.roblox.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/inventory/, '')
+        rewrite: (path) => path.replace(/^\/proxy\/inventory/, '')
       },
-      '/api/avatar': {
+      '/proxy/avatar': {
         target: 'https://avatar.roblox.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/avatar/, '')
+        rewrite: (path) => path.replace(/^\/proxy\/avatar/, '')
       },
-      '/api/economy': {
+      '/proxy/economy': {
         target: 'https://economy.roblox.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/economy/, '')
+        rewrite: (path) => path.replace(/^\/proxy\/economy/, '')
       }
     }
   }
